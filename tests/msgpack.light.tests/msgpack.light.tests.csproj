@@ -2,12 +2,12 @@
   <PropertyGroup>
     <Description>Tests for MsgPack.Light library</Description>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp1.0;netcoreapp1.1;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
     <WarningsAsErrors>true</WarningsAsErrors>
     <AssemblyName>msgpack.light.tests</AssemblyName>
     <RootNamespace>ProGaudi.MsgPack.Light.Tests</RootNamespace>
     <Product>msgpack.light</Product>
-    <Copyright>Copyright © 2016, 2017</Copyright>
+    <Copyright>Copyright © 2016-2018</Copyright>
     <PackageTags>tests;xunit;msgpack;serialization</PackageTags>
     <PackageProjectUrl>https://github.com/progaudi/MsgPack.Light</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/progaudi/MsgPack.Light/master/LICENSE</PackageLicenseUrl>
@@ -19,11 +19,11 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
-    <PackageReference Include="Moq" Version="4.7.99" />
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
-    <PackageReference Include="Shouldly" Version="2.8.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />
+    <PackageReference Include="Moq" Version="4.8.2" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <PackageReference Include="Shouldly" Version="3.0.0" />
     <ProjectReference Include="..\..\src\msgpack.light\msgpack.light.csproj" />
   </ItemGroup>
 </Project>
