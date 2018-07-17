@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.CompilerServices;
 
+using static ProGaudi.MsgPack.Light.DataCodes;
+
 namespace ProGaudi.MsgPack.Light
 {
     /// <summary>
@@ -15,7 +17,7 @@ namespace ProGaudi.MsgPack.Light
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int WriteBoolean(Span<byte> buffer, bool value)
         {
-            buffer[0] = value ? DataCodes.True : DataCodes.False;
+            buffer[0] = value ? True : False;
             return 1;
         }
 
@@ -31,40 +33,40 @@ namespace ProGaudi.MsgPack.Light
         {
             wroteSize = 1;
             if (buffer.Length < wroteSize) return false;
-            buffer[0] = value ? DataCodes.True : DataCodes.False;
+            buffer[0] = value ? True : False;
             return true;
         }
 
         /// <summary>
         /// Read boolean value from buffer.
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="readSize"></param>
-        /// <returns></returns>
+        /// <param name="buffer">Buffer to read from</param>
+        /// <param name="readSize">Count of bytes, read from <paramref name="buffer"/>.</param>
+        /// <returns>Boolean value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ReadBoolean(ReadOnlySpan<byte> buffer, out int readSize)
         {
             readSize = 1;
             var result = buffer[0];
-            if (result != DataCodes.True && result != DataCodes.False) throw WrongCode(result, DataCodes.True, DataCodes.False);
-            return result == DataCodes.True;
+            if (result != True && result != False) throw WrongCode(result, True, False);
+            return result == True;
         }
 
         /// <summary>
         /// Tries to write boolean value into <paramref name="buffer"/>.
         /// </summary>
-        /// <param name="buffer">Buffer to write.</param>
+        /// <param name="buffer">Buffer to read form.</param>
         /// <param name="value">Result. If return false is <c>false</c>, value is unspecified.</param>
         /// <param name="readSize">Count of bytes, read from <paramref name="buffer"/>. If return value is <c>false</c>, value is unspecified.</param>
-        /// <returns><c>true</c>, if everything is ok, <c>false</c> if <paramref name="buffer"/> is too small.</returns>
+        /// <returns><c>true</c>, if everything is ok, <c>false</c> if <paramref name="buffer"/> is too small or <paramref name="buffer"/>[0] is not <see cref="True"/> or <see cref="DataCodes.False"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryReadBoolean(ReadOnlySpan<byte> buffer, out bool value, out int readSize)
         {
             readSize = 1;
             value = false;
             if (buffer.Length < readSize) return false;
-            value = buffer[0] == DataCodes.True;
-            return value || buffer[0] == DataCodes.False;
+            value = buffer[0] == True;
+            return value || buffer[0] == False;
         }
     }
 }
