@@ -1,36 +1,47 @@
 jobs:
-- template: .azure.build.yml
-  parameters:
-    name: macOS
-    pool:
-      vmImage: 'macOS 10.13'
+- job: macOs
+  pool:
+    name: Hosted macOS
+  steps:
+    - template: .azure/tests.yml
 
-- template: .azure.build.yml
-  parameters:
-    name: Linux
-    pool:
-      vmImage: 'Ubuntu 16.04'
+- job: linux
+  pool:
+    name: Hosted Ubuntu 1604
+  steps:
+    - script: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -channel 1.1
+      displayName: Installing .netcore 1.1
+    - template: .azure/tests.yml
+      parameters:
+        netcore1Global: false
 
-- template: .azure.build.yml
-  parameters:
-    name: Windows
-    pool:
-      vmImage: 'vs2017-win2016'
+- job: win
+  dependsOn:
+  - macOs
+  - linux
+  pool:
+    name: Hosted VS2017
+  steps:
+    - template: .azure/tests.yml
 
-- template: .azure.test.yml
-  parameters:
-    name: macOS
-    pool:
-      vmImage: 'macOS 10.13'
+    - task: PowerShell@2
+      displayName: pack nuget package
+      inputs:
+        targetType: inline
+        script: |
+            $version = $(git describe --tags | %{$_ -replace '-([^g])', '.$1'})
+            dotnet pack --no-build -v minimal -c Release /property:Version=$version /property:PackageOutputPath=$(Build.ArtifactStagingDirectory)
 
-- template: .azure.test.yml
-  parameters:
-    name: Linux
-    pool:
-      vmImage: 'Ubuntu 16.04'
+    - ${{ if ne(variables['Build.Reason'], 'PullRequest') }}:
+      - task: NuGetCommand@2
+        displayName: push nuget packages
+        inputs:
+          command: push
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+          nuGetFeedType: external
+          publishFeedCredentials: api.nuget.org
 
-- template: .azure.test.yml
-  parameters:
-    name: Windows
-    pool:
-      vmImage: 'vs2017-win2016'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: .nupkgs
